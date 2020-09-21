@@ -2,8 +2,7 @@
 <html>
 <body>
 <?php
-$html = file_get_contents('https://ttonlineviewer.com/user/saxon.nottz'); //get the html returned from the foll>
-
+$html = file_get_contents('https://ttonlineviewer.com/user/saxon.nottz');
 
 $doc1 = new DOMDocument();
 
