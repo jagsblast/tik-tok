@@ -8,7 +8,14 @@
 import time
 from rpi_ws281x import *
 import argparse
- 
+import requests
+from bs4 import BeautifulSoup
+import time
+new = 0
+current = 0
+
+
+
 # LED strip configuration:
 LED_COUNT      = 60      # Number of LED pixels.
 LED_PIN        = 18      # GPIO pin connected to the pixels (18 uses PWM!).
@@ -34,11 +41,29 @@ def wheel(pos):
  
 def rainbow(strip, wait_ms=20, iterations=1):
     """Draw rainbow that fades across all pixels at once."""
-    for j in range(256*iterations):
-        for i in range(strip.numPixels()):
-            strip.setPixelColor(3, wheel((i+j) & 255))
-        strip.show()
-        time.sleep(wait_ms/1000.0)
+    
+    while True:
+        URL = 'http://localhost:80'
+        page = requests.get(URL)
+        soup = BeautifulSoup(page.content, 'html.parser')
+        follower = soup.body.text
+        new = int(follower)
+        print ("current followers", new)
+        if new > current:
+            print (new, "you gained a new follower")
+            for j in range(256*iterations):
+                for i in range(strip.numPixels()):
+                    strip.setPixelColor(i, wheel((i+j) & 255))
+                strip.show()
+                time.sleep(wait_ms/1000.0)
+            current = new
+        elif new < current:
+            print(current, "get in the bin m8")
+            current = new
+        else:
+            print(current, "gg my drilla")
+            current = new
+        time.sleep(2)
  
 
  
